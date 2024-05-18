@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Validamos que pasen el nombre del proyecto
 repo=$1
 if [ "$repo" = "" ]
@@ -13,7 +12,7 @@ proyecto=$2
 if [ "$proyecto" = "" ]
 then
   echo "migrar: falta ingresar el nombre del proyecto"
-  exit 1
+  exit 2
 fi
 
 # Descargamos el proyecto si no lo descargamos anteriormente y lo renombramos a old
@@ -37,8 +36,9 @@ cp -R ./$proyecto-old/assets ./$proyecto      2> /dev/null
 cp -R ./$proyecto-old/im*    ./$proyecto      2> /dev/null
 cp -R ./$proyecto-old/video* ./$proyecto      2> /dev/null
 
-# Eliminamos log4j.properties
+# Eliminamos archivos comunes que quedaron deprecados
 find . -type f -name '*.properties' -delete
+find . -type f -name 'WOLLOK.ROOT' -delete
 
 # Copiamos README si hay
 cp -R ./$proyecto-old/README.md ./$proyecto   2> /dev/null
@@ -48,7 +48,7 @@ travis_badge="(https://travis-ci.org/$repo/$proyecto.svg?branch=master)](https:/
 gh_badge="(https://github.com/$repo/$proyecto/actions/workflows/ci.yml/badge.svg)](https://github.com/$repo/$proyecto/actions/workflows/ci.yml)"
 sed -i "s,$travis_badge,$gh_badge,g" ./$proyecto/README.md
 
-# Renombrar los archivos de test para que no colisionen
+# Renombrar los archivos de test y programas para que no colisionen
 shopt -s globstar
 for pathname in **/*.wtest; do
     basename=${pathname##*/}
@@ -59,8 +59,6 @@ for pathname in **/*.wtest; do
     fi
 done
 
-# Renombrar los programas como pgmXXXX.wpgm
-shopt -s globstar
 for pathname in **/*.wpgm; do
     basename=${pathname##*/}
     dirname=${pathname%"$basename"}
@@ -70,9 +68,10 @@ for pathname in **/*.wpgm; do
     fi
 done
 
-# Generamos un tag en el repo remoto que diga "Ultima versión Wollok Xtext"
+# Generamos un tag v1.0 en el repo remoto para tener taggeada la última versión de Wollok Xtext
 cd $proyecto-old
-git tag -a -m "Ultima versión Wollok Xtext"
+git tag -a -f v1.0 -m "Ultima versión Wollok Xtext"
+git push origin v1.0
 cd ..
 mv ./$proyecto-old/.git ./$proyecto
 
