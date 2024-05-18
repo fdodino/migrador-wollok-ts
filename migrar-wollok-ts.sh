@@ -23,6 +23,12 @@ fi
 
 mv ./$proyecto ./$proyecto-old
 
+# Generamos un tag v1.0 en el repo remoto para tener taggeada la última versión de Wollok Xtext
+cd $proyecto-old
+git tag -a -f v1.0 -m "Ultima versión Wollok Xtext"
+git push origin v1.0
+cd ..
+
 # Creo el proyecto con el formato nuevo
 wollok init -p $proyecto --noTest
 
@@ -35,6 +41,8 @@ cp -R ./$proyecto-old/src/. ./$proyecto
 cp -R ./$proyecto-old/assets ./$proyecto      2> /dev/null
 cp -R ./$proyecto-old/im*    ./$proyecto      2> /dev/null
 cp -R ./$proyecto-old/video* ./$proyecto      2> /dev/null
+
+mv ./$proyecto-old/.git ./$proyecto
 
 # Eliminamos archivos comunes que quedaron deprecados
 find . -type f -name '*.properties' -delete
@@ -59,6 +67,9 @@ for pathname in **/*.wtest; do
     fi
 done
 
+# Reemplazamos el fixture por method initialize
+sed -i "s,fixture,method initialize(),g" ./$proyecto/**/*.wtest
+
 for pathname in **/*.wpgm; do
     basename=${pathname##*/}
     dirname=${pathname%"$basename"}
@@ -67,13 +78,6 @@ for pathname in **/*.wpgm; do
       mv -- "$pathname" "${dirname}pgm${basename^}"
     fi
 done
-
-# Generamos un tag v1.0 en el repo remoto para tener taggeada la última versión de Wollok Xtext
-cd $proyecto-old
-git tag -a -f v1.0 -m "Ultima versión Wollok Xtext"
-git push origin v1.0
-cd ..
-mv ./$proyecto-old/.git ./$proyecto
 
 # Commiteamos el proyecto
 cd $proyecto
