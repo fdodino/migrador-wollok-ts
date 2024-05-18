@@ -14,4 +14,5 @@ migrar-wollok-ts.sh wollok polimorfismoSueldoDePepe
 - Copia assets, directorios `img` o `im*` también
 - Si el README tiene un badge de Travis lo reemplaza por el de Github Actions
 - Sube al repositorio la nueva versión en la rama default
-
+- Deprecaciones que también resuelve
+  - `fixture` -> `method initialize()`
