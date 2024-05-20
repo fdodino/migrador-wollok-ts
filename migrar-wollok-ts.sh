@@ -45,8 +45,8 @@ cp -R ./$proyecto-old/video* ./$proyecto      2> /dev/null
 mv ./$proyecto-old/.git ./$proyecto
 
 # Eliminamos archivos comunes que quedaron deprecados
-find . -type f -name '*.properties' -delete
-find . -type f -name 'WOLLOK.ROOT' -delete
+find $proyecto -type f -name '*.properties' -delete
+find $proyecto -type f -name 'WOLLOK.ROOT' -delete
 
 # Copiamos README si hay
 cp -R ./$proyecto-old/README.md ./$proyecto   2> /dev/null
@@ -58,7 +58,7 @@ sed -i "s,$travis_badge,$gh_badge,g" ./$proyecto/README.md
 
 # Renombrar los archivos de test y programas para que no colisionen
 shopt -s globstar
-for pathname in **/*.wtest; do
+for pathname in $proyecto/**/*.wtest; do
     basename=${pathname##*/}
     dirname=${pathname%"$basename"}
     if [[ ! $basename == "test"* ]];
@@ -70,7 +70,7 @@ done
 # Reemplazamos el fixture por method initialize
 sed -i "s,fixture,method initialize(),g" ./$proyecto/**/*.wtest
 
-for pathname in **/*.wpgm; do
+for pathname in $proyecto/**/*.wpgm; do
     basename=${pathname##*/}
     dirname=${pathname%"$basename"}
     if [[ ! $basename == "pgm"* ]];
