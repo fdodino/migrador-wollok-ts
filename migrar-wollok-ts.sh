@@ -38,7 +38,7 @@ rm $proyecto/example.wlk
 # Copiamos los archivos Wollok del proyecto
 cp -R ./$proyecto-old/src/. ./$proyecto
 
-cp -R ./$proyecto-old/assets ./$proyecto      2> /dev/null
+cp -R ./$proyecto-old/asset* ./$proyecto      2> /dev/null
 cp -R ./$proyecto-old/im*    ./$proyecto      2> /dev/null
 cp -R ./$proyecto-old/video* ./$proyecto      2> /dev/null
 
